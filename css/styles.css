@@ -1705,10 +1705,6 @@ body.menu-open .menu-toggle span:last-child {
 }
 
 .method__quote {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(18px, 2vw, 28px);
   margin-top: clamp(80px, 11vw, 160px);
   padding-top: clamp(30px, 3vw, 44px);
   border-top: 1px solid var(--line);
@@ -1724,9 +1720,9 @@ body.menu-open .menu-toggle span:last-child {
 
 .method__quote-author {
   color: var(--ink-muted);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 0.55em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -2936,6 +2932,10 @@ a.contact-row:hover .contact-row__arrow {
 
   .contact__intro h2 {
     font-size: 3.4rem;
+  }
+
+  .contact-row__value[data-email-text] {
+    font-size: 1.15rem;
   }
 }
 

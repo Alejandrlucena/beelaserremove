@@ -52,6 +52,10 @@
       link.setAttribute("href", whatsappHref());
     });
 
+    document.querySelectorAll("[data-whatsapp-text]").forEach((el) => {
+      el.textContent = phone || "WhatsApp";
+    });
+
     document.querySelectorAll("[data-whatsapp-cta]").forEach((link) => {
       const treatment = (link.dataset.treatmentLink || "").trim();
       const message = treatment

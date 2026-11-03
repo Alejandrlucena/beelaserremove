@@ -7,7 +7,7 @@
 
 window.BEE_SITE = {
   // Email de contacto
-  email: "hola@beelaserremove.com",
+  email: "bee.laser.remove@gmail.com",
 
   // Teléfono visible (puedes escribirlo con espacios)
   phone: "613 381 150",
