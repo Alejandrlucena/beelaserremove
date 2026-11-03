@@ -119,16 +119,113 @@
     el.textContent = String(new Date().getFullYear());
   });
 
-  /* ---------- Header ---------- */
+  /* ---------- Header, progress and parallax ---------- */
 
   const header = document.querySelector("[data-header]");
-  if (header) {
-    const updateHeader = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 24);
+  const progressBar = document.querySelector("[data-scroll-progress]");
+  const parallaxItems = Array.from(document.querySelectorAll("[data-parallax]"));
+
+  const updateHeader = () => {
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  };
+
+  const updateProgress = () => {
+    if (!progressBar) return;
+
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollable > 0 ? Math.min(Math.max(window.scrollY / scrollable, 0), 1) : 0;
+    progressBar.style.transform = `scaleX(${progress.toFixed(4)})`;
+  };
+
+  const updateParallax = () => {
+    if (reduceMotion || !parallaxItems.length) return;
+
+    const viewport = window.innerHeight;
+
+    parallaxItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      if (rect.bottom < -120 || rect.top > viewport + 120) return;
+
+      const strength = Number.parseFloat(item.dataset.parallax) || 0;
+      const offset = (rect.top + rect.height / 2 - viewport / 2) / viewport;
+      item.style.setProperty("--parallax-y", `${(-offset * strength).toFixed(2)}px`);
+    });
+  };
+
+  let scrollFrame = 0;
+
+  const updateScrollEffects = () => {
+    scrollFrame = 0;
+    updateHeader();
+    updateProgress();
+    updateParallax();
+  };
+
+  const requestScrollUpdate = () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(updateScrollEffects);
+  };
+
+  updateScrollEffects();
+  window.addEventListener("scroll", requestScrollUpdate, { passive: true });
+  window.addEventListener("resize", requestScrollUpdate, { passive: true });
+  window.addEventListener("load", requestScrollUpdate, { once: true });
+
+  /* ---------- Marquee ---------- */
+
+  const marquee = document.querySelector(".marquee");
+  const marqueeTrack = marquee?.querySelector(".marquee__track");
+
+  if (marquee && marqueeTrack) {
+    const baseGroup = marqueeTrack.querySelector(".marquee__group");
+    let marqueeFrame = 0;
+
+    const layoutMarquee = () => {
+      marqueeFrame = 0;
+      if (!baseGroup) return;
+
+      const viewport = marquee.clientWidth;
+      const groupWidth = baseGroup.getBoundingClientRect().width;
+      if (!viewport || !groupWidth) return;
+
+      const neededGroups = Math.max(2, Math.ceil(viewport / groupWidth) + 2);
+      const currentGroups = marqueeTrack.children.length;
+      const fragment = document.createDocumentFragment();
+
+      for (let i = currentGroups; i < neededGroups; i += 1) {
+        fragment.appendChild(baseGroup.cloneNode(true));
+      }
+
+      if (fragment.childNodes.length) {
+        marqueeTrack.appendChild(fragment);
+      }
+
+      if (currentGroups > neededGroups + 1) {
+        while (marqueeTrack.children.length > neededGroups) {
+          marqueeTrack.lastElementChild.remove();
+        }
+      }
+
+      marqueeTrack.style.setProperty("--marquee-shift", `-${groupWidth.toFixed(2)}px`);
     };
 
-    updateHeader();
-    window.addEventListener("scroll", updateHeader, { passive: true });
+    const scheduleMarqueeLayout = () => {
+      if (marqueeFrame) return;
+      marqueeFrame = window.requestAnimationFrame(layoutMarquee);
+    };
+
+    scheduleMarqueeLayout();
+
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(scheduleMarqueeLayout).observe(marquee);
+    } else {
+      window.addEventListener("resize", scheduleMarqueeLayout, { passive: true });
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleMarqueeLayout).catch(() => {});
+    }
   }
 
   /* ---------- Mobile menu ---------- */
@@ -233,18 +330,28 @@
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealItems.forEach((item) => item.classList.add("is-visible"));
   } else {
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
+    const revealEntryObserver = new IntersectionObserver(
+      (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+          if (entry.isIntersecting) entry.target.classList.add("is-visible");
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -7% 0px" }
+      { threshold: 0, rootMargin: "0px 0px -6% 0px" }
     );
 
-    revealItems.forEach((item) => revealObserver.observe(item));
+    const revealExitObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) entry.target.classList.remove("is-visible");
+        });
+      },
+      { threshold: 0 }
+    );
+
+    revealItems.forEach((item) => {
+      revealEntryObserver.observe(item);
+      revealExitObserver.observe(item);
+    });
   }
 
   /* ---------- Treatments accordion ---------- */
