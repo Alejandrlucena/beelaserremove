@@ -726,6 +726,21 @@ body.menu-open .menu-toggle span:last-child {
   border-color: var(--cream);
 }
 
+.has-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.has-arrow svg {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
 /* ---------- Hero ---------- */
 
 .hero {
@@ -1959,10 +1974,18 @@ a.contact-row:hover {
 
 .contact-row__arrow {
   justify-self: end;
+  display: inline-flex;
+  align-items: center;
   color: var(--cream-faint);
-  font-family: var(--font-sans);
-  font-size: 13px;
   transition: transform 0.35s var(--ease);
+}
+
+.contact-row__arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
 }
 
 a.contact-row:hover .contact-row__arrow {
