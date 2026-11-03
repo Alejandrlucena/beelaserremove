@@ -41,6 +41,8 @@
   --line-light: rgba(243, 229, 201, 0.18);
   --font-display: "Instrument Serif", Georgia, serif;
   --font-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  /* Flecha U+2197 en presentación de texto: evita el emoji en iOS/Android */
+  --font-arrow: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --pad: clamp(20px, 4.2vw, 72px);
@@ -732,13 +734,10 @@ body.menu-open .menu-toggle span:last-child {
   gap: 6px;
 }
 
-.has-arrow svg {
-  width: 11px;
-  height: 11px;
-  flex: 0 0 auto;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
+.has-arrow > span[aria-hidden="true"] {
+  font-family: var(--font-arrow);
+  font-variant-emoji: text;
+  line-height: 1;
 }
 
 /* ---------- Hero ---------- */
@@ -1974,18 +1973,12 @@ a.contact-row:hover {
 
 .contact-row__arrow {
   justify-self: end;
-  display: inline-flex;
-  align-items: center;
   color: var(--cream-faint);
+  font-family: var(--font-arrow);
+  font-size: 13px;
+  font-variant-emoji: text;
+  line-height: 1;
   transition: transform 0.35s var(--ease);
-}
-
-.contact-row__arrow svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
 }
 
 a.contact-row:hover .contact-row__arrow {
