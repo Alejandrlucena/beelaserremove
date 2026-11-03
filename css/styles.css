@@ -1013,20 +1013,23 @@ body.menu-open .menu-toggle span:last-child {
   position: absolute;
   z-index: 3;
   top: 50%;
+  width: 72px;
   color: var(--ink-muted);
   font-size: 8px;
   font-weight: 500;
   letter-spacing: 0.19em;
+  line-height: 1.5;
+  text-align: center;
   text-transform: uppercase;
 }
 
 .orb__caption--left {
-  left: -6px;
+  left: -29.5px;
   transform: translateY(-50%) rotate(-90deg);
 }
 
 .orb__caption--right {
-  right: -9px;
+  right: -29.5px;
   transform: translateY(-50%) rotate(90deg);
 }
 
