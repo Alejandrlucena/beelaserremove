@@ -1,5 +1,5 @@
 /* =========================================================
-   BEE LASER REMOVE — abeja escultórica 3D del hero
+   BEE LÁSER REMOVE — abeja escultórica 3D del hero
    Three.js · abeja vectorial extruida + marco hexagonal
    ========================================================= */
 
@@ -13,8 +13,11 @@ const FRAME_INNER_PATH =
   "M230.3 175.5C247.9 144.7 262.3 119.0 262.3 118.4C262.3 117.9 248.0 92.1 230.4 61.2L198.5 5.0L134.0 5.0L69.5 5.0L37.6 61.2C20.0 92.1 5.7 117.8 5.7 118.4C5.8 119.3 64.4 223.1 68.6 229.8L70.1 232.0L134.2 231.8L198.4 231.5L230.3 175.5Z";
 
 /* La abeja y el marco comparten escala para conservar la proporción del logo. */
-/* Deja aire suficiente para que el hexágono no se recorte al girar. */
-const MODEL_SCALE = 0.0155;
+const MODEL_SCALE = 0.0142;
+
+/* Límites de giro calculados para que ninguna esquina salga del lienzo. */
+const MAX_YAW = 0.38;
+const MAX_PITCH = 0.34;
 
 const canvas = document.querySelector("#hero-canvas");
 const orbWrap = document.querySelector("[data-orb]");
@@ -165,6 +168,7 @@ function initHero() {
   let spinY = 0;
   let spinX = 0;
   let dragging = false;
+  let returnAt = 0;
   let lastPointerX = 0;
   let lastPointerY = 0;
   let isRunning = false;
@@ -202,19 +206,40 @@ function initHero() {
       pointerCurrent.x = damp(pointerCurrent.x, pointerTarget.x, 0.035);
       pointerCurrent.y = damp(pointerCurrent.y, pointerTarget.y, 0.035);
 
-      // The whole logo breathes and floats as one connected piece.
-      logo.position.y = Math.sin(seconds * 0.82) * 0.032;
-      logo.position.x = Math.sin(seconds * 0.41 + 0.7) * 0.012;
+      // Tras soltar, el giro vuelve poco a poco a su posición de reposo.
+      if (!dragging && returnAt && time >= returnAt) {
+        spinY = damp(spinY, 0, 0.028);
+        spinX = damp(spinX, 0, 0.028);
 
-      // A very subtle idle sway keeps the sculpture alive without hiding the frame.
-      const idleY = dragging ? 0 : Math.sin(seconds * 0.24) * 0.045;
-      const idleX = dragging ? 0 : Math.sin(seconds * 0.19 + 0.8) * 0.016;
+        if (Math.abs(spinY) < 0.0005 && Math.abs(spinX) < 0.0005) {
+          spinY = 0;
+          spinX = 0;
+          returnAt = 0;
+        }
+      }
+
+      // The whole logo breathes and floats as one connected piece.
+      logo.position.y = Math.sin(seconds * 0.82) * 0.04;
+      logo.position.x = Math.sin(seconds * 0.41 + 0.7) * 0.015;
+
+      // Un balanceo continuo mantiene viva la pieza sin perder el encuadre.
+      const idleY = dragging ? 0 : Math.sin(seconds * 0.34) * 0.09;
+      const idleX = dragging ? 0 : Math.sin(seconds * 0.27 + 0.8) * 0.04;
 
       // The circular orbit drifts very slowly.
       orbitLine.rotation.z = 0.16 + seconds * 0.003;
 
-      logo.rotation.y = spinY + pointerCurrent.x * 0.18 + idleY;
-      logo.rotation.x = spinX + pointerCurrent.y * 0.12 + idleX;
+      logo.rotation.z = -0.03 + Math.sin(seconds * 0.21) * 0.006;
+      logo.rotation.y = THREE.MathUtils.clamp(
+        spinY + pointerCurrent.x * 0.14 + idleY,
+        -MAX_YAW,
+        MAX_YAW
+      );
+      logo.rotation.x = THREE.MathUtils.clamp(
+        spinX + pointerCurrent.y * 0.1 + idleX,
+        -MAX_PITCH,
+        MAX_PITCH
+      );
     } else {
       logo.rotation.y = spinY;
       logo.rotation.x = spinX;
@@ -242,13 +267,22 @@ function initHero() {
       const deltaX = event.clientX - lastPointerX;
       const deltaY = event.clientY - lastPointerY;
 
-      spinY += deltaX * 0.0065;
-      spinX += deltaY * 0.0065;
+      spinY = THREE.MathUtils.clamp(
+        spinY + deltaX * 0.0048,
+        -MAX_YAW,
+        MAX_YAW
+      );
+      spinX = THREE.MathUtils.clamp(
+        spinX + deltaY * 0.0048,
+        -MAX_PITCH,
+        MAX_PITCH
+      );
 
       lastPointerX = event.clientX;
       lastPointerY = event.clientY;
       pointerTarget.x = 0;
       pointerTarget.y = 0;
+      returnAt = 0;
       return;
     }
 
@@ -263,6 +297,7 @@ function initHero() {
   const onPointerDown = (event) => {
     if (reduceMotion || (event.pointerType === "mouse" && event.button !== 0)) return;
     dragging = true;
+    returnAt = 0;
     lastPointerX = event.clientX;
     lastPointerY = event.clientY;
     orbWrap.classList.add("is-dragging");
@@ -270,6 +305,9 @@ function initHero() {
   };
 
   const endDrag = () => {
+    if (dragging) {
+      returnAt = performance.now() + 1400;
+    }
     dragging = false;
     orbWrap.classList.remove("is-dragging");
   };

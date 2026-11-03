@@ -1,5 +1,5 @@
 /* =========================================================
-   BEE LASER REMOVE — interacciones generales
+   BEE LÁSER REMOVE — interacciones generales
    ========================================================= */
 
 (() => {

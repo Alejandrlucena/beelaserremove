@@ -1,5 +1,5 @@
 /* ============================================================
-   BEE LASER REMOVE — datos editables del sitio
+   BEE LÁSER REMOVE — datos editables del sitio
    ------------------------------------------------------------
    Edita solamente los valores entre comillas y guarda el archivo.
    No hace falta tocar el resto de la web.
