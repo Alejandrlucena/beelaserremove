@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://beelaserremove.com/sitemap.xml
