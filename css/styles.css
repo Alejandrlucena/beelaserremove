@@ -367,6 +367,17 @@ html {
   transform: translate(2px, -2px);
 }
 
+.site-header.is-scrolled .header-cta {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--cream);
+}
+
+.site-header.is-scrolled .header-cta:hover {
+  background: var(--forest-soft);
+  border-color: var(--forest-soft);
+}
+
 .menu-toggle {
   position: relative;
   display: none;
@@ -476,6 +487,42 @@ html {
   text-transform: uppercase;
 }
 
+.mobile-menu__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 54px;
+  margin-bottom: 8px;
+  padding: 6px 6px 6px 20px;
+  border-radius: 100px;
+  background: var(--cream);
+  color: var(--forest);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+
+.mobile-menu__cta .button__icon {
+  width: 42px;
+  height: 42px;
+  background: rgba(21, 45, 26, 0.09);
+}
+
+.mobile-menu__cta:hover {
+  background: var(--cream-bright);
+  transform: translateY(-1px);
+}
+
+.mobile-menu__cta:hover .button__icon {
+  transform: rotate(45deg);
+}
+
 body.menu-open .mobile-menu {
   visibility: visible;
   opacity: 1;
@@ -564,6 +611,23 @@ body.menu-open .menu-toggle span:last-child {
   transform: translateY(-2px);
 }
 
+.button--outline {
+  border-color: var(--line);
+  color: var(--forest);
+}
+
+.button--outline:hover {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--cream);
+}
+
+.button--compact {
+  min-height: 48px;
+  padding: 5px 5px 5px 18px;
+  gap: 14px;
+}
+
 .button__icon {
   display: grid;
   width: 38px;
@@ -576,6 +640,19 @@ body.menu-open .menu-toggle span:last-child {
 
 .button--cream .button__icon {
   background: rgba(21, 45, 26, 0.09);
+}
+
+.button--outline .button__icon {
+  background: rgba(21, 45, 26, 0.07);
+}
+
+.button--outline:hover .button__icon {
+  background: rgba(243, 229, 201, 0.14);
+}
+
+.button--compact .button__icon {
+  width: 36px;
+  height: 36px;
 }
 
 .button__icon svg {
@@ -940,67 +1017,6 @@ body.menu-open .menu-toggle span:last-child {
   letter-spacing: 0.14em;
   text-align: right;
   text-transform: uppercase;
-}
-
-.hero__foot {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-top: 17px;
-  padding-bottom: 22px;
-  border-top: 1px solid var(--line-soft);
-  color: var(--ink-faint);
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
-.hero__note {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.hero__note span {
-  display: block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--forest);
-}
-
-.scroll-cue {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  transition: color 0.3s var(--ease);
-}
-
-.scroll-cue:hover {
-  color: var(--forest);
-}
-
-.scroll-cue__line {
-  position: relative;
-  display: block;
-  width: 44px;
-  height: 1px;
-  overflow: hidden;
-  background: var(--line);
-}
-
-.scroll-cue__line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 50%;
-  background: var(--forest);
-  animation: scrollLine 2.4s var(--ease) infinite;
 }
 
 /* ---------- Manifesto ---------- */
@@ -2118,11 +2134,6 @@ a.contact-row:hover .contact-row__arrow {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes scrollLine {
-  0% { transform: translateX(-110%); }
-  55%, 100% { transform: translateX(220%); }
-}
-
 @keyframes marqueeScroll {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-50%, 0, 0); }
@@ -2266,7 +2277,7 @@ a.contact-row:hover .contact-row__arrow {
     margin-bottom: 0;
   }
 
-  .faq__intro .text-link {
+  .faq__intro .button {
     grid-column: 2;
     grid-row: 2;
     align-self: end;
@@ -2366,18 +2377,6 @@ a.contact-row:hover .contact-row__arrow {
     aspect-ratio: 1 / 1.02;
   }
 
-  .hero__foot {
-    margin-top: 28px;
-  }
-
-  .hero__note {
-    max-width: 75%;
-  }
-
-  .scroll-cue {
-    display: none;
-  }
-
   .hero::after {
     display: none;
   }
@@ -2459,7 +2458,7 @@ a.contact-row:hover .contact-row__arrow {
     margin-top: 24px;
   }
 
-  .faq__intro .text-link {
+  .faq__intro .button {
     margin-top: 28px;
   }
 
@@ -2614,18 +2613,6 @@ a.contact-row:hover .contact-row__arrow {
   .orb__cross--bottom {
     bottom: 9%;
     left: 8%;
-  }
-
-  .hero__foot {
-    padding-top: 14px;
-    padding-bottom: 17px;
-    font-size: 7px;
-    letter-spacing: 0.1em;
-  }
-
-  .hero__note {
-    max-width: 100%;
-    line-height: 1.7;
   }
 
   .section-label {
