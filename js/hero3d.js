@@ -13,7 +13,8 @@ const FRAME_INNER_PATH =
   "M230.3 175.5C247.9 144.7 262.3 119.0 262.3 118.4C262.3 117.9 248.0 92.1 230.4 61.2L198.5 5.0L134.0 5.0L69.5 5.0L37.6 61.2C20.0 92.1 5.7 117.8 5.7 118.4C5.8 119.3 64.4 223.1 68.6 229.8L70.1 232.0L134.2 231.8L198.4 231.5L230.3 175.5Z";
 
 /* La abeja y el marco comparten escala para conservar la proporción del logo. */
-const MODEL_SCALE = 0.0175;
+/* Deja aire suficiente para que el hexágono no se recorte al girar. */
+const MODEL_SCALE = 0.0155;
 
 const canvas = document.querySelector("#hero-canvas");
 const orbWrap = document.querySelector("[data-orb]");
